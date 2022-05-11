@@ -78,8 +78,20 @@ def process_data(data):
     return data_to_plot
 
 def plot_data(data_to_plot, ax):
-    for pair in data_to_plot["xy_pairs"]:
-        ax.plot(pair[0], pair[1])
+    # for pair in data_to_plot["xy_pairs"]:
+    #     ax.plot(pair[0], pair[1])
+    if "std" in data_to_plot.keys():
+        mean = data_to_plot["mean"]
+        std = data_to_plot["std"]
+        y_lower = mean - std
+        y_upper = mean + std
+        x = data_to_plot["xy_pairs"][0][0]
+        ax.fill_between(x, y_lower, y_upper, facecolor='blue', alpha=0.1)
+
+    if "mean" in data_to_plot.keys():
+        x = data_to_plot["xy_pairs"][0][0]
+        mean = data_to_plot["mean"]
+        ax.plot(x, mean, color="blue")
 
 def save_fig(plt, data_to_plot, DATA_PATH, PROJECT, LEARNER, DEM):
     fpath_base = get_figure_fpath(data_to_plot, DATA_PATH, PROJECT, LEARNER, DEM)
