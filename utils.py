@@ -5,6 +5,8 @@ import numpy as np
 X_MAX = 2500000
 SMOOTHING = 5
 
+
+
 def find_cutoff(x):
     cutoff = -1
     for i in range(len(x)):
@@ -46,9 +48,10 @@ def get_figure_fpath(data_to_plot, fig_save_path, learner, expert):
 
     return fpath
 
-def load_data(data_path, learner, expert):
-    fname = get_fname_input(learner, expert) + ".csv"
-    fpath = os.path.join(data_path, fname)
+def load_data(data_path, learner, expert, algo="ours"):
+    fname = get_fname_input(learner, expert)
+    fname += ".csv"
+    fpath = os.path.join(data_path, algo, fname)
     data_in = pandas.read_csv(fpath)
 
     assert (data_in.shape[1] - 1) % 3 == 0
@@ -71,6 +74,7 @@ def compute_mean_std_from_xy_pairs(xy_pairs):
 def get_xy_pairs(data):
     n_seeds = int((data.shape[1] - 1) / 6)
 
+
     x_y_pairs = []
 
     for seed in range(n_seeds):
@@ -80,10 +84,10 @@ def get_xy_pairs(data):
 
         y = smooth_data(y)
 
-        cutoff = find_cutoff(x)
-
-        x = x[:cutoff]
-        y = y[:cutoff]
+        # cutoff = find_cutoff(x)
+        #
+        # x = x[:cutoff]
+        # y = y[:cutoff]
 
         if len(x_y_pairs) > 0:
             assert x.shape == x_y_pairs[-1][0].shape
@@ -109,21 +113,22 @@ def process_data(data):
 
     return data_to_plot
 
-def plot_data(data_to_plot, ax):
+def plot_data(data_to_plot, ax, color):
     # for pair in data_to_plot["xy_pairs"]:
     #     ax.plot(pair[0], pair[1])
+
     if "std" in data_to_plot.keys():
         mean = data_to_plot["mean"]
         std = data_to_plot["std"]
         y_lower = mean - std
         y_upper = mean + std
         x = data_to_plot["xy_pairs"][0][0]
-        ax.fill_between(x, y_lower, y_upper, facecolor='blue', alpha=0.1)
+        ax.fill_between(x, y_lower, y_upper, facecolor=color, alpha=0.1)
 
     if "mean" in data_to_plot.keys():
         x = data_to_plot["xy_pairs"][0][0]
         mean = data_to_plot["mean"]
-        ax.plot(x, mean, color="blue")
+        ax.plot(x, mean, color=color, linewidth=0.5)
 
 def save_fig(plt, data_to_plot, fig_save_path, learner, expert):
     fpath_base = get_figure_fpath(data_to_plot, fig_save_path, learner, expert)
