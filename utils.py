@@ -40,11 +40,7 @@ def smooth_data(y, smoothing_factor=None):
     assert smoothing_factor % 2 == 1
     offset = int((smoothing_factor-1)/2)
 
-    try:
-        y_padded = np.concatenate((y[0]*np.ones(offset), y, y[-1]*np.ones(offset)), axis=0)
-    except:
-        import pdb
-        pdb.set_trace()
+    y_padded = np.concatenate((y[0]*np.ones(offset), y, y[-1]*np.ones(offset)), axis=0)
 
     for i in range(offset, len(y_padded)-offset-1):
         accumulated = []
@@ -90,7 +86,7 @@ def compute_mean_std_from_xy_pairs(xy_pairs):
         ys.append(item[1])
 
     ys = np.stack(ys, axis=1)
-    mean = np.median(ys, axis=1)
+    mean = np.mean(ys, axis=1)
     max = np.max(ys, axis=1)
     std = sem(ys, axis=1, nan_policy="omit")
     # std = np.nanstd(ys, axis=1)
@@ -114,6 +110,10 @@ def get_xy_pairs(data, agent_type):
 
         x = x[:cutoff]
         y = y[:cutoff]
+
+        if x[-1] > 1000000:
+            for i in range(len(x)):
+                x[i] = np.round(x[i]/50000)*50000
 
         # y = y/EXPERT_DISTANCES[agent_type]
 
@@ -173,6 +173,14 @@ def plot_data(data_to_plot, ax, color, label, fig, white_line_dist=None):
         x = data_to_plot["xy_pairs"][0][0]
         mean = data_to_plot["mean"]
 
+        # remove double entries only for Gym data
+        # import pdb
+        # pdb.set_trace()
+
+        if x[-1] > 1000000:
+            x, mean = remove_double_entries(x, mean)
+
+        # mean = smooth_data(mean, 3)
         ax.plot(x, mean, color=color, linewidth=0.5, label=label)
 
 

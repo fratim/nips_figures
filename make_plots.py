@@ -19,7 +19,7 @@ matplotlib.rcParams.update({
 ABLATION_IDS = ["abl_nonTI", "abl_noembed", "abl_largerembed", "abl_singletraj"]
 
 COLORS = ["red", "blue"]
-ABL_COLORS = ["red", "green", "blue"]
+ABL_COLORS = ["red", "grey", "blue"]
 FIG_SIZE = (4, 3)
 
 def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ablation=False):
@@ -42,6 +42,10 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
 
     if algos[1] == "abl_singletraj":
         algos.append("baseline")
+
+    if algos[1] == "all_ablations":
+        algos = [algos[0], *ABLATION_IDS[:-1]]
+        colors = ["red", "gray", "gray", "gray"]
 
     for i, algo in enumerate(algos):
         print(f"Loading data for {learner} from {expert} - {algo}")
@@ -72,7 +76,11 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
     if not is_ablation:
         save_fig(plt, fig_save_path, learner, expert)
     else:
-        save_fig(plt, fig_save_path, learner, expert, ending=algos[1])
+        if len(algos) > 3:
+            ending = "all_ablations"
+        else:
+            ending = algos[1]
+        save_fig(plt, fig_save_path, learner, expert, ending=ending)
 
 DATA_PATH = "/Users/tim/Data/nips_figures/"
 
@@ -92,31 +100,35 @@ for expert in embodiments:
             continue
         make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "baseline"])
 
+make_and_save_figure(data_folder, fig_save_path, "Walker", "HalfCheetah", algos=["ours", "baseline"])
+
 ## Make Gym ablation studies figures
-os.makedirs(fig_save_path, exist_ok=True)
-
-embodiments_ablation = ["Hopper", "HalfCheetah"]
-
-for expert in embodiments_ablation:
-    for learner in embodiments_ablation:
-        if expert == learner:
-            continue
-        for ablation in ABLATION_IDS:
-            make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", ablation], is_ablation=True)
-
-
-ENVIRONMENT = "XIRL"
-
-## Make XIRL figures
-data_folder = os.path.join(FIGURE_PATH_OUT, ENVIRONMENT, TYPE)
+# os.makedirs(fig_save_path, exist_ok=True)
+#
+# embodiments_ablation = ["Hopper", "HalfCheetah"]
+#
+# for expert in embodiments_ablation:
+#     for learner in embodiments_ablation:
+#         if expert == learner:
+#             continue
+#         for ablation in ABLATION_IDS:
+#             make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", ablation], is_ablation=True)
+#
+#         make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "all_ablations"], is_ablation=True)
 
 
-embodiments = ["gripper", "longstick"]
-for learner in embodiments:
-    for expert in embodiments:
-        if expert == learner:
-            continue
-        make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "baseline"])
+# ENVIRONMENT = "XIRL"
+#
+# ## Make XIRL figures
+# data_folder = os.path.join(FIGURE_PATH_OUT, ENVIRONMENT, TYPE)
+#
+#
+# embodiments = ["gripper", "longstick"]
+# for learner in embodiments:
+#     for expert in embodiments:
+#         if expert == learner:
+#             continue
+#         make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "baseline"])
 
 
 
