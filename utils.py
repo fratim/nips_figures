@@ -5,6 +5,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.stats import sem
 import copy
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 X_MAX = 2500000
 SMOOTHING = 7
@@ -207,9 +208,9 @@ def save_fig(plt, fig_save_path, learner, expert, ending=None):
     if ending is not None:
         fpath_base += ending
 
-    plt.tight_layout()
-    plt.savefig(f"{fpath_base}.png")
-    plt.savefig(f"{fpath_base}.pgf")
+    # plt.tight_layout()
+    plt.savefig(f"{fpath_base}.png", bbox_inches='tight')
+    plt.savefig(f"{fpath_base}.pgf", bbox_inches='tight')
 
 
 def get_white_line_points(x, y_lower, white_line_dist):
