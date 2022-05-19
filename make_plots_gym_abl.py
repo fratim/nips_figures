@@ -21,8 +21,8 @@ ABLATION_IDS = ["abl_nonTI", "abl_noembed", "abl_largerembed", "abl_singletraj"]
 
 COLORS = ["red", "blue"]
 STYLES = ["solid", "dotted"]
-ABL_COLORS = ["red", "grey", "blue"]
-ABL_STYLES = ["solid", "dotted", "dashed", "dashdot"]
+ABL_COLORS = ["red", "blue", "grey", "green", "magenta", "orange"]
+ABL_STYLES = ["solid", "dotted", "dashed", "dashdot", "dotted", "dashed"]
 FIG_SIZE = (4, 3)
 
 def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ablation=False, ax=None):
@@ -40,7 +40,7 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
         colors = COLORS
         styles = STYLES
     else:
-        title = f"{learner} f. {expert}-{algos[1]}"
+        title = f"{learner} f. {expert}"
         colors = ABL_COLORS
         styles = ABL_STYLES
 
@@ -48,9 +48,9 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
         algos.append("baseline")
 
     if algos[1] == "all_ablations":
-        algos = [algos[0], *ABLATION_IDS[:-1]]
-        colors = ["red", "gray", "gray", "gray"]
-        styles = ["dotted", "dotted", "dashed", "dashdot"]
+        algos = ["ours", "baseline", *ABLATION_IDS[:]]
+        colors = ABL_COLORS
+        styles = ABL_STYLES
 
     for i, algo in enumerate(algos):
         print(f"Loading data for {learner} from {expert} - {algo}")
@@ -60,7 +60,11 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
         data_to_plot_collected.append(data_to_plot)
 
     for i, algo in enumerate(algos):
-        plot_data(data_to_plot_collected[i], ax, color=colors[i], label=algo, fig=fig, style=styles[i])
+        try:
+            plot_data(data_to_plot_collected[i], ax, color=colors[i], label=algo, fig=fig, style=styles[i])
+        except:
+            import pdb
+            pdb.set_trace()
 
     ax.set_title(title)
     # ax.set_xlabel("Environment Steps")
@@ -99,58 +103,98 @@ data_folder = os.path.join(FIGURE_PATH_OUT, ENVIRONMENT, TYPE)
 
 embodiments = ["Hopper", "HalfCheetah", "Walker"]
 
-fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(12,6))
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12,4))
 fig.subplots_adjust(bottom=0.15)
 
-row_col = [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)]
-i = 0
-y_lims = [[-1, 11], [-1, 11], [-50, 33], [-50, 33], [-1, 7.5], [-1, 7.5]]
+j = 0
+y_lims = [[-1, 11],  [-25, 33], [-50, 33], [-1, 7.5], [-1, 7.5]]
 
-for learner in embodiments:
-    for expert in embodiments:
+# for learner in embodiments:
+#     for expert in embodiments:
+#         if expert == learner:
+#             continue
+
+embodiments_ablation = ["Hopper", "HalfCheetah"]
+
+
+for learner in embodiments_ablation:
+    for expert in embodiments_ablation:
+
+
         if expert == learner:
             continue
 
-        fig.subplots_adjust(wspace=0.2, hspace=0.5)
-
-        ax_curr = ax[row_col[i]]
-
-        ax_curr.set_xlabel("Environment Steps")
-        if row_col[i][1]==0:
-            ax_curr.set_ylabel("Reward")
+        # for ablation in ABLATION_IDS:
+        ax_curr = ax[j]
 
         line1 = Line2D([0], [0], label='UDIL', color='red')
         line2 = Line2D([0], [0], label='GWIL', color='blue', linestyle="dotted")
-        handles = [line1, line2]
+        line4 = Line2D([0], [0], label='not time invariant', color='green', linestyle="dashdot")
+        line5 = Line2D([0], [0], label='no embedding', color='magenta', linestyle="dotted")
+        line6 = Line2D([0], [0], label='larger embedding', color='orange', linestyle="dashed")
+        line3 = Line2D([0], [0], label='single traj.', color='grey', linestyle="dashed")
 
-        ax_curr.set_ylim(y_lims[i])
+        handles = [line1, line2, line3, line4, line5, line6]
 
-        if i ==3:
-            lgd = plt.legend(handles=handles, bbox_to_anchor=(-0.7, -0.38), loc="center", ncol=2, shadow=False, fancybox=False)
-            frame = lgd.get_frame()
-            frame.set_edgecolor('0')
-            frame.set_linewidth(0.1)
-        # fig.savefig('samplefigure.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+        # ABL_COLORS = ["red", "grey", "blue", "green", "magenta", "orange"]
+        # ABL_STYLES = ["solid", "dotted", "dashed", "dashdot", "dotted", "dashed"]
 
-        make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "baseline"], ax=ax_curr)
+        # ax_curr.set_ylim(y_lims[i])
 
-        i+=1
+        if j==0:
+            ax_curr.set_ylabel("Reward")
+
+        ax_curr.set_xlabel("Environment Steps")
+        # ax_curr.set_ylim(y_lims[i])
+
+        lgd = plt.legend(handles=handles, bbox_to_anchor=(-0.1, -0.27), loc="center", ncol=6, shadow=False, fancybox=False)
+        frame = lgd.get_frame()
+        frame.set_edgecolor('0')
+        frame.set_linewidth(0.1)
+
+
+        make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "all_ablations"], is_ablation=True, ax=ax_curr)
+        j += 1
+
+        # ABLATION_IDS = ["abl_nonTI", "abl_noembed", "abl_largerembed", "abl_singletraj"]
+
+        # ax_curr = ax[i]
+        # make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "all_ablations"], is_ablation=True, ax=ax_curr)
+        # i += 1
+
+        # fig.subplots_adjust(wspace=0.2, hspace=0.5)
+        #
+        # ax_curr = ax[row_col[i]]
+        #
+        # ax_curr.set_xlabel("Environment Steps")
+        # if row_col[i][1]==0:
+        #     ax_curr.set_ylabel("Reward")
+        #
+        # line1 = Line2D([0], [0], label='UDIL', color='red')
+        # line2 = Line2D([0], [0], label='GWIL', color='blue', linestyle="dotted")
+        # handles = [line1, line2]
+        #
+        #
+        #
+        # if i ==3:
+        #     lgd = plt.legend(handles=handles, bbox_to_anchor=(-0.7, -0.38), loc="center", ncol=2, shadow=False, fancybox=False)
+        #     frame = lgd.get_frame()
+        #     frame.set_edgecolor('0')
+        #     frame.set_linewidth(0.1)
+        # # fig.savefig('samplefigure.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+        #
+        # make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "baseline"], ax=ax_curr)
+        #
+        # i+=1
 
 # make_and_save_figure(data_folder, fig_save_path, "Walker", "HalfCheetah", algos=["ours", "baseline"])
 
 ## Make Gym ablation studies figures
 # os.makedirs(fig_save_path, exist_ok=True)
 #
-# embodiments_ablation = ["Hopper", "HalfCheetah"]
+
 #
-# for expert in embodiments_ablation:
-#     for learner in embodiments_ablation:
-#         if expert == learner:
-#             continue
-#         for ablation in ABLATION_IDS:
-#             make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", ablation], is_ablation=True)
 #
-#         make_and_save_figure(data_folder, fig_save_path, learner, expert, algos=["ours", "all_ablations"], is_ablation=True)
 
 
 # ENVIRONMENT = "XIRL"

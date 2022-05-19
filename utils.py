@@ -161,7 +161,7 @@ def remove_double_entries(x, y):
     return x, y
 
 
-def plot_data(data_to_plot, ax, color, label, fig, white_line_dist=None):
+def plot_data(data_to_plot, ax, color, label, fig, white_line_dist=None, style="solid"):
 
     # for cur_run in data_to_plot["xy_pairs"]:
     #     ax.plot(cur_run[0], cur_run[1], color=color, linewidth=0.5, label=label, alpha=0.3)
@@ -182,16 +182,16 @@ def plot_data(data_to_plot, ax, color, label, fig, white_line_dist=None):
             x, mean = remove_double_entries(x, mean)
 
         # mean = smooth_data(mean, 3)
-        ax.plot(x, mean, color=color, linewidth=0.5, label=label)
+        ax.plot(x, mean, color=color, linewidth=0.5, label=label, linestyle=style)
 
 
-    if "std" in data_to_plot.keys():
-        mean = data_to_plot["mean"]
-        std = data_to_plot["std"]
-        y_lower = mean - std
-        y_upper = mean + std
-        x = data_to_plot["xy_pairs"][0][0]
-        ax.fill_between(x, y_lower, y_upper, facecolor=color, alpha=0.05)
+    # if "std" in data_to_plot.keys():
+    #     mean = data_to_plot["mean"]
+    #     std = data_to_plot["std"]
+    #     y_lower = mean - std
+    #     y_upper = mean + std
+    #     x = data_to_plot["xy_pairs"][0][0]
+    #     ax.fill_between(x, y_lower, y_upper, facecolor=color, alpha=0.05)
     #
     #     # white_line_points = get_white_line_points(x, y_lower, white_line_dist)
     #
