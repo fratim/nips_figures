@@ -4,9 +4,12 @@ import pandas
 
 import utils
 from utils import load_data, process_data, plot_data, get_figure_fpath, save_fig
+import seaborn as sns
 import matplotlib
 import numpy as np
 from matplotlib.lines import Line2D
+
+# sns.set_theme()
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update({
@@ -21,8 +24,8 @@ ABLATION_IDS = ["abl_nonTI", "abl_noembed", "abl_largerembed", "abl_singletraj"]
 
 COLORS = ["red", "blue"]
 STYLES = ["solid", "dotted"]
-ABL_COLORS = ["red", "blue", "grey", "green", "magenta", "orange"]
-ABL_STYLES = ["solid", "dotted", "dashed", "dashdot", "dotted", "dashed"]
+ABL_COLORS = ["red", "green", "magenta", "orange"]
+ABL_STYLES = ["solid", "dashdot", "dotted", "dashed"]
 FIG_SIZE = (4, 3)
 
 def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ablation=False, ax=None):
@@ -36,11 +39,11 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
     data_to_plot_collected = []
 
     if not is_ablation:
-        title = f"{learner} f. {expert}"
+        title = f"{learner} from {expert}"
         colors = COLORS
         styles = STYLES
     else:
-        title = f"{learner} f. {expert}"
+        title = f"{learner} from {expert}"
         colors = ABL_COLORS
         styles = ABL_STYLES
 
@@ -48,7 +51,7 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
         algos.append("baseline")
 
     if algos[1] == "all_ablations":
-        algos = ["ours", "baseline", *ABLATION_IDS[:]]
+        algos = ["ours", "abl_nonTI", "abl_noembed", "abl_largerembed"]
         colors = ABL_COLORS
         styles = ABL_STYLES
 
@@ -103,8 +106,8 @@ data_folder = os.path.join(FIGURE_PATH_OUT, ENVIRONMENT, TYPE)
 
 embodiments = ["Hopper", "HalfCheetah", "Walker"]
 
-fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12,4))
-fig.subplots_adjust(bottom=0.15)
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12,3.5))
+fig.subplots_adjust(bottom=0.1)
 
 j = 0
 y_lims = [[-1, 11],  [-25, 33], [-50, 33], [-1, 7.5], [-1, 7.5]]
@@ -128,13 +131,13 @@ for learner in embodiments_ablation:
         ax_curr = ax[j]
 
         line1 = Line2D([0], [0], label='UDIL', color='red')
-        line2 = Line2D([0], [0], label='GWIL', color='blue', linestyle="dotted")
-        line4 = Line2D([0], [0], label='not time invariant', color='green', linestyle="dashdot")
-        line5 = Line2D([0], [0], label='no embedding', color='magenta', linestyle="dotted")
-        line6 = Line2D([0], [0], label='larger embedding', color='orange', linestyle="dashed")
-        line3 = Line2D([0], [0], label='single traj.', color='grey', linestyle="dashed")
+        # line2 = Line2D([0], [0], label='GWIL', color='blue', linestyle="dotted")
+        line3 = Line2D([0], [0], label='not time invariant', color='green', linestyle="dashdot")
+        line4 = Line2D([0], [0], label='no embedding', color='magenta', linestyle="dotted")
+        line5 = Line2D([0], [0], label='larger embedding', color='orange', linestyle="dashed")
+        # line6 = Line2D([0], [0], label='single traj.', color='grey', linestyle="dashed")
 
-        handles = [line1, line2, line3, line4, line5, line6]
+        handles = [line1, line3, line4, line5]
 
         # ABL_COLORS = ["red", "grey", "blue", "green", "magenta", "orange"]
         # ABL_STYLES = ["solid", "dotted", "dashed", "dashdot", "dotted", "dashed"]

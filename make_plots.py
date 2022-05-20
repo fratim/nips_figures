@@ -34,11 +34,18 @@ def make_and_save_figure(data_path, fig_save_path, learner, expert, algos, is_ab
     data_to_plot_collected = []
 
     if not is_ablation:
-        title = f"{learner} f. {expert}"
+        if learner == "gripper":
+            title = "Gripper f. Longstick"
+        else:
+            title = "Longstick f. Gripper"
         colors = COLORS
+
     else:
         title = f"{learner} f. {expert}-{algos[1]}"
         colors = ABL_COLORS
+
+    if learner == "gripper":
+        title = "Gripper f. Longstick"
 
     if algos[1] == "abl_singletraj":
         algos.append("baseline")

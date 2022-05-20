@@ -182,22 +182,22 @@ def plot_data(data_to_plot, ax, color, label, fig, white_line_dist=None, style="
             x, mean = remove_double_entries(x, mean)
 
         # mean = smooth_data(mean, 3)
-        ax.plot(x, mean, color=color, linewidth=0.5, label=label, linestyle=style)
+        ax.plot(x, mean, color=color, linewidth=2, label=label, linestyle=style, markersize=10)
 
 
-    # if "std" in data_to_plot.keys():
-    #     mean = data_to_plot["mean"]
-    #     std = data_to_plot["std"]
-    #     y_lower = mean - std
-    #     y_upper = mean + std
-    #     x = data_to_plot["xy_pairs"][0][0]
-    #     ax.fill_between(x, y_lower, y_upper, facecolor=color, alpha=0.05)
-    #
-    #     # white_line_points = get_white_line_points(x, y_lower, white_line_dist)
-    #
-    #     # plot white lines
-    #     # ax.plot(white_line_points[0], white_line_points[1], color="black", linewidth=0.1)
-    #     # ax.plot(x, y_upper-white_line_dist, color="white", linewidth=0.1)
+    if "std" in data_to_plot.keys():
+        mean = data_to_plot["mean"]
+        std = data_to_plot["std"]
+        y_lower = mean - std
+        y_upper = mean + std
+        x = data_to_plot["xy_pairs"][0][0]
+        ax.fill_between(x, y_lower, y_upper, facecolor=color, alpha=0.1)
+
+        # white_line_points = get_white_line_points(x, y_lower, white_line_dist)
+
+        # plot white lines
+        # ax.plot(white_line_points[0], white_line_points[1], color="black", linewidth=0.1)
+        # ax.plot(x, y_upper-white_line_dist, color="white", linewidth=0.1)
     #
     # ax.legend()
 
