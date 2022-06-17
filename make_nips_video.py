@@ -57,7 +57,7 @@ def load_clips_xirl():
         for algo in ["gt", "ours", "xirl"]:
             for seed in [0, 1, 2]:
                 fpath = os.path.join(DATA_FOLDER, body, algo, f"{seed}.mp4")
-                xirl_clips[body][algo][seed] = VideoFileClip(fpath).resize(0.7).fx(vfx.speedx, 0.2)
+                xirl_clips[body][algo][seed] = VideoFileClip(fpath).resize(0.7).fx(vfx.speedx, 0.3)
             xirl_clips[body][algo]["all"] = ed.concatenate_videoclips([xirl_clips[body][algo][i] for i in [0, 1, 2]])
     return xirl_clips
 
@@ -127,7 +127,7 @@ def get_sections_xirl():
 
     sections.append(get_section(text_top="Results on the XMagical benchmark: \n \n"
                                          "- Agents embodied as 'gripper' and 'longstick'. \n \n"
-                                         "- Expert agents (shown below) trained with ground-truth reward \n \n"
+                                         "- Expert agents (shown below) trained with ground-truth reward. \n \n"
                                          "- Goal: Move all blocks to the top.",
                                 left=["groundtruth reward", xirl_clips["gripper"]["gt"]["all"], "bottom"],
                                 right=["groundtruth reward", xirl_clips["longstick"]["gt"]["all"], "bottom"]
@@ -135,7 +135,7 @@ def get_sections_xirl():
 
     sections.append(get_section(text_top="Cross-domain imitation learning results:\n  \n"
                                          "- 'Longstick' trained from 'gripper' observations. \n \n "
-                                         "- XIRL (right) imitates the movement of the gripper \n \n "
+                                         "- XIRL (right) imitates the movement of the gripper. \n \n "
                                          "- The proposed UDIL (left) learns an optimal policy.",
                                 left=["UDIL", xirl_clips["longstick"]["ours"]["all"], "bottom"],
                                 right=["XIRL", xirl_clips["longstick"]["xirl"]["all"], "bottom"]
@@ -143,7 +143,7 @@ def get_sections_xirl():
 
     sections.append(get_section(text_top="Cross-domain imitation learning results:\n  \n"
                                          "- 'Gripper' trained from 'longstick' observations. \n \n "
-                                         "- XIRL (right) imitates the movement of the longstick, which is unsuccessful \n \n "
+                                         "- XIRL (right) imitates the movement of the longstick, which is unsuccessful. \n \n "
                                          "- The proposed UDIL (left) learns an optimal policy.",
                                 left=["UDIL", xirl_clips["gripper"]["ours"]["all"], "bottom"],
                                 right=["XIRL", xirl_clips["gripper"]["xirl"]["all"], "bottom"]
@@ -155,37 +155,37 @@ def get_sections_gym():
 
     gym_clips = load_clips_gym()
 
-    hopper_section = get_section(text_top="Cross-domain imitation learning results: \n \n "
-                                         "- Hopper agent traind from observations of halfcheetah (left) and walker (right) \n \n"
-                                         "- Hopper uses same locomotion form in both cases",
-                                 left=["Trained from halfcheetah", gym_clips["hopper"]["halfcheetah"], "top"],
-                                 right=["Trained from walker", gym_clips["hopper"]["walker"], "top"]
-                                 )
-
-    hopper_section = add_text_before_clip(text="Results on the Gym benchmark: \n \n"
-                                 "- Hopper, walker and halfcheetah agents. \n \n"
-                                 "- Each agent is trained separately on observations of the other two",
-                                duration=7,
-                                clip=hopper_section)
-
-    sections.append(hopper_section)
-
-    sections.append(get_section(text_top="Cross-domain imitation learning results: \n \n "
-                                         "- Walker trained from observations of halfcheetah (left) and hoper (right) \n \n"
-                                         "- Two different locomotion forms developed by the walker",
+    section = get_section(text_top="Cross-domain imitation learning results: \n \n "
+                                         "- Walker trained from observations of halfcheetah (left) and hoper (right). \n \n"
+                                         "- Two different locomotion forms developed by the walker.",
                                 left=["Trained from halfcheetah", gym_clips["walker"]["halfcheetah"], "top"],
                                 right=["Trained from hopper", gym_clips["walker"]["hopper"], "top"]
-                                ))
+                                )
+
+    section = add_text_before_clip(text="Results on the Gym benchmark: \n \n"
+                                 "- Hopper, walker and halfcheetah agents. \n \n"
+                                 "- Each agent is trained separately on observations of the other two.",
+                                duration=7,
+                                clip=section)
+
+    sections.append(section)
+
     sections.append(get_section(text_top="Cross-domain imitation learning results: \n \n "
-                                         "- Halfcheetah trained from observations of walker (left) and hopper (right) \n \n"
-                                         "- Two different locomotion types developed by the halfcheetah",
+                                         "- Hopper agent trained from observations of halfcheetah (left) and walker (right). \n \n"
+                                         "- Hopper uses same locomotion form in both cases.",
+                                 left=["Trained from halfcheetah", gym_clips["hopper"]["halfcheetah"], "top"],
+                                 right=["Trained from walker", gym_clips["hopper"]["walker"], "top"]
+                                 ))
+    sections.append(get_section(text_top="Cross-domain imitation learning results: \n \n "
+                                         "- Halfcheetah trained from observations of walker (left) and hopper (right). \n \n"
+                                         "- Two different locomotion types developed by the halfcheetah.",
                                 left=["Trained from walker", gym_clips["halfcheetah"]["walker"], "top"],
                                 right=["Trained from hopper", gym_clips["halfcheetah"]["hopper"], "top"]
                                 ))
-    sections.append(get_section(text_top="Ablation study with larger task-relevant embedding size,: \n \n "
-                                         "i.e. more information is transferred from expert to learner \n \n"
-                                         "- Halfcheetah trained from observations of hopper (left)\n \n"
-                                         "- Hopper trained from observations of halfcheetah (right)",
+    sections.append(get_section(text_top="Ablation study with larger task-relevant embedding size, \n \n "
+                                         "i.e. more information is transferred from expert to learner: \n \n"
+                                         "- Hopper trained from observations of halfcheetah (right).\n \n"
+                                         "- Halfcheetah trained from observations of hopper (left).",
                                 left=["Trained from halfcheetah", gym_clips["hopper"]["halfcheetah_abl"], "top"],
                                 right=["Trained from hopper", gym_clips["halfcheetah"]["hopper_abl"], "top"]
                                 ))
@@ -196,11 +196,12 @@ def main():
     if sys.argv[1] == "xirl":
         sections = get_sections_xirl()
         video = ed.concatenate_videoclips(sections)
-        video.write_videofile(output_fname+"_xirl.mp4", fps=15)
+        video = video.resize(0.3)
+        video.write_videofile(output_fname+"_xirl_small_15_2.mp4", fps=20)
     elif sys.argv[1] == "gym":
         sections = get_sections_gym()
         video = ed.concatenate_videoclips(sections)
-        video.write_videofile(output_fname+"_gym.mp4", fps=2)
+        video.write_videofile(output_fname+"_gym.mp4", fps=15)
     else:
         raise NotImplementedError
 
