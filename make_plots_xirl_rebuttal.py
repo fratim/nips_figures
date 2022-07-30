@@ -124,8 +124,8 @@ embodiments = ["gripper", "longstick"]
 data_folder = os.path.join(FIGURE_PATH_OUT, ENVIRONMENT, TYPE)
 
 
-for learner in ["longstick"]:
-    for expert in ["gripper", "shortstick", "mediumstick"]:
+for learner in ["gripper"]:
+    for expert in ["longstick", "shortstick", "mediumstick"]:
 
 
         if expert == learner:
