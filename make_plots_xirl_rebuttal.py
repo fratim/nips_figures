@@ -124,8 +124,8 @@ embodiments = ["gripper", "longstick"]
 data_folder = os.path.join(FIGURE_PATH_OUT, ENVIRONMENT, TYPE)
 
 
-for learner in ["gripper"]:
-    for expert in ["longstick", "shortstick", "mediumstick"]:
+for learner in ["longstick"]:
+    for expert in ["gripper", "shortstick", "mediumstick"]:
 
 
         if expert == learner:
@@ -145,7 +145,7 @@ for learner in ["gripper"]:
         ax_curr.set_xlabel("Environment Steps")
         ax_curr.set_ylim([0, 60])
 
-        lgd = plt.legend(handles=handles, bbox_to_anchor=(-0.1, -0.4), loc="center", ncol=6, shadow=False, fancybox=False)
+        lgd = plt.legend(handles=handles, bbox_to_anchor=(-0.7, -0.4), loc="center", ncol=6, shadow=False, fancybox=False)
         frame = lgd.get_frame()
         frame.set_edgecolor('0')
         frame.set_linewidth(0.1)

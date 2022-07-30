@@ -118,7 +118,7 @@ def get_xy_pairs(data, agent_type):
         else:
             x = data.iloc[:, 0].values
 
-            x = x*1000000/x[-1]
+            x = x*140000/x[-1]+2000
             y = data.iloc[:, 1 + 1 * seed].values
 
         y = smooth_data(y)
