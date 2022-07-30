@@ -71,6 +71,9 @@ def get_figure_fpath(fig_save_path, learner, expert):
 
 def load_data(data_path, learner, expert, algo="ours"):
     fname = get_fname_input(learner, expert)
+
+    print(f"loading data {fname}")
+
     fname += ".csv"
     fpath = os.path.join(data_path, algo, fname)
     data_in = pandas.read_csv(fpath)
@@ -96,14 +99,27 @@ def compute_mean_std_from_xy_pairs(xy_pairs):
 
 
 def get_xy_pairs(data, agent_type):
-    n_seeds = int((data.shape[1] - 1) / 6)
+    if data.shape[1] >= 19:
+        n_seeds = int((data.shape[1] - 1) / 6)
+    else:
+        n_seeds = int((data.shape[1] - 1))
+
+    print(f"loading n seeds: {n_seeds}")
 
     x_y_pairs = []
 
     for seed in range(n_seeds):
 
         x = data.iloc[:, 0].values
-        y = data.iloc[:, 4 + 6 * seed].values
+
+        if data.shape[1] >= 19:
+            x = data.iloc[:, 0].values
+            y = data.iloc[:, 4 + 6 * seed].values
+        else:
+            x = data.iloc[:, 0].values
+
+            x = x*1000000/x[-1]
+            y = data.iloc[:, 1 + 1 * seed].values
 
         y = smooth_data(y)
 
