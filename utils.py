@@ -99,10 +99,14 @@ def compute_mean_std_from_xy_pairs(xy_pairs):
 
 
 def get_xy_pairs(data, agent_type):
-    if data.shape[1] >= 19:
-        n_seeds = int((data.shape[1] - 1) / 6)
-    else:
-        n_seeds = int((data.shape[1] - 1))
+    n_seeds = int((data.shape[1] - 1) / 6)
+    col_size = 6
+    # if data.iloc[:, 0].values[-1] < 500:
+    #     n_seeds = int((data.shape[1] - 1) / 3)
+    #     col_size = 3
+    # else:
+    #     n_seeds = int((data.shape[1] - 1) / 6)
+    #     col_size = 6
 
     print(f"loading n seeds: {n_seeds}")
 
@@ -112,13 +116,18 @@ def get_xy_pairs(data, agent_type):
 
         x = data.iloc[:, 0].values
 
+        # if x[-1] < 500:
+        #
+
+        # y = data.iloc[:, 4 + col_size * seed].values
+
         if data.shape[1] >= 19:
             x = data.iloc[:, 0].values
             y = data.iloc[:, 4 + 6 * seed].values
         else:
             x = data.iloc[:, 0].values
 
-            x = x*1000000/x[-1]
+            x = x*3000000/x[-1]
             y = data.iloc[:, 1 + 1 * seed].values
 
         y = smooth_data(y)
